@@ -1,0 +1,16 @@
+.PHONY: all flash reset term
+
+PIDFILE ?= /tmp/riotctrl_test_pid
+CTRLPID = $(shell cat $(firstword $(wildcard $(PIDFILE)) /dev/null))
+
+CTRL_WRAPPER ?= ./ctrl.py
+APPLICATION ?= ./echo.py
+
+all:
+flash:
+
+reset:
+	kill -USR1 $(CTRLPID) 2>/dev/null || true
+
+term:
+	sh -c 'echo $$$$ > $(PIDFILE); exec $(CTRL_WRAPPER) $(APPLICATION)'

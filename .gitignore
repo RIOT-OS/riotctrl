@@ -1,3 +1,11 @@
+# Manually added:
+# All xml reports
+*.xml
+
+#### joe made this: http://goel.io/joe
+
+#####=== Python ===#####
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +135,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# VScode
+.vscode/

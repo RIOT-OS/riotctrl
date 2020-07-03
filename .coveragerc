@@ -1,2 +1,2 @@
 [run]
-omit = riotnode/tests/*
+omit = riotctrl/tests/*

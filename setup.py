@@ -4,7 +4,7 @@ import os
 from setuptools import setup, find_packages
 
 PACKAGE = 'riotctrl'
-LICENSE = 'LGPLv2.1'
+LICENSE = 'MIT'
 URL = 'https://github.com/RIOT-OS/riotctrl'
 
 
@@ -28,8 +28,10 @@ setup(
     version=get_version(PACKAGE),
     description='RIOT Ctrl - A RIOT node python abstraction',
     long_description=open('README.rst').read(),
-    author='Gaëtan Harter',
-    author_email='gaetan.harter@fu-berlin.de',
+    author='Gaëtan Harter, Leandro Lanzieri, Martine S. Lenders',
+    author_email='gaetan.harter@fu-berlin.de, '
+                 'leandro.lanzieri@haw-hamburg.de, '
+                 'm.lenders@fu-berlin.de',
     url=URL,
     license=LICENSE,
     download_url=URL,
@@ -40,6 +42,7 @@ setup(
                  'Programming Language :: Python :: 3.5',
                  'Programming Language :: Python :: 3.6',
                  'Programming Language :: Python :: 3.7',
+                 'Programming Language :: Python :: 3.8',
                  'Intended Audience :: End Users/Desktop',
                  'Environment :: Console',
                  'Topic :: Utilities', ],

@@ -13,6 +13,7 @@ import pexpect
 
 
 DEVNULL = open(os.devnull, 'w')
+MAKE = os.environ.get('MAKE', 'make')
 
 
 class TermSpawn(pexpect.spawn):
@@ -179,7 +180,7 @@ class RIOTCtrl():
 
         :return: list of command arguments (for example for subprocess)
         """
-        command = ['make']
+        command = [MAKE]
         command.extend(self.MAKE_ARGS)
         if self._application_directory != '.':
             dir_cmd = '--no-print-directory', '-C', self._application_directory

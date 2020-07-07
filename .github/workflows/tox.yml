@@ -38,6 +38,11 @@ jobs:
     - name: Check package
       if: matrix.python-version == 3.9
       run: tox -e check_package
+    - name: Upload to coverage
+      uses: codecov/codecov-action@v1.2.1
+      with:
+        files: coverage.xml
+        flags: ${{ matrix.python-version }},${{ matrix.tox-testenv }}
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@master
       if: >-

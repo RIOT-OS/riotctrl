@@ -1,6 +1,14 @@
 name: Tox testing
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:

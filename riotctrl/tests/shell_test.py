@@ -57,6 +57,19 @@ def test_shell_interaction_cmd_first_prompt_missing(app_pidfile_env):
         assert 'snafoo' in res
 
 
+def test_shell_interaction_cmd_reset_term(app_pidfile_env):
+    """Test basic functionalities with the 'shell' application."""
+    ctrl = init_ctrl(app_pidfile_env)
+    ctrl.start_term()
+    shell = riotctrl.shell.ShellInteraction(ctrl)
+    res = shell.cmd('foobar')
+    assert 'foobar' in res
+    ctrl.start_term()   # reset's term implicitly
+    res = shell.cmd('snafoo')
+    assert 'snafoo' in res
+    ctrl.stop_term()
+
+
 class Snafoo(riotctrl.shell.ShellInteraction):
     """Test inheritance class to test check_term decorator"""
     @riotctrl.shell.ShellInteraction.check_term

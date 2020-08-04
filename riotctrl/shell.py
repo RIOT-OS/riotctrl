@@ -39,7 +39,7 @@ class ShellInteraction():
             self.stop_term()
 
     def _start_replwrap(self):
-        if self.replwrap is None:
+        if self.replwrap is None or self.replwrap.child != self.riotctrl.term:
             # consume potentially shown prompt to be on the same ground as if
             # it is not shown
             self.riotctrl.term.expect_exact(["> ", pexpect.TIMEOUT],

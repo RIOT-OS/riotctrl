@@ -37,6 +37,7 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       if: >-
         matrix.python-version == 3.9 &&
+        matrix.tox-testenv == 'test' &&
         github.event_name == 'push' &&
         startsWith(github.event.ref, 'refs/tags')
       with:

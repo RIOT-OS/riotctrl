@@ -9,6 +9,8 @@ import abc
 import pexpect
 import pexpect.replwrap
 
+import riotctrl.multictrl.ctrl as multictrl
+
 
 # pylint: disable=R0903
 class ShellInteractionParser(abc.ABC):
@@ -33,10 +35,17 @@ class ShellInteraction():
     PROMPT_TIMEOUT = .5
 
     def __init__(self, riotctrl, prompt='> '):
+        # used in __del__, so initialize before raising exception
+        self.term_was_started = False
+        if isinstance(riotctrl, multictrl.MultiRIOTCtrl):
+            raise TypeError(
+                "{} not compatible with multi-RIOTCtrl {}. Use {} instead."
+                .format(type(self), type(riotctrl),
+                        'riotctrl.multictrl.shell.MultiShellInteractionMixin')
+            )
         self.riotctrl = riotctrl
         self.prompt = prompt
         self.replwrap = None
-        self.term_was_started = False
 
     def __del__(self):
         if self.term_was_started:

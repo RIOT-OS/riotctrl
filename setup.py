@@ -47,7 +47,7 @@ setup(
                  'Environment :: Console',
                  'Topic :: Utilities', ],
     install_requires=['pexpect', 'psutil'],
-    extra_require={
+    extras_require={
         'rapidjson': ['python-rapidjson']
     },
     python_requires='>=3.6',

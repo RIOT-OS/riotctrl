@@ -88,6 +88,7 @@ class RIOTCtrl():
 
     MAKE_ARGS = ()
     RESET_TARGETS = ('reset',)
+    TERM_TARGETS = ('term',)
 
     def __init__(self, application_directory='.', env=None):
         self._application_directory = application_directory
@@ -133,7 +134,7 @@ class RIOTCtrl():
         """
         self.stop_term()
 
-        term_cmd = self.make_command(['term'])
+        term_cmd = self.make_command(self.TERM_TARGETS)
         self.term = self.TERM_SPAWN_CLASS(term_cmd[0], args=term_cmd[1:],
                                           env=self.env, **spawnkwargs)
 

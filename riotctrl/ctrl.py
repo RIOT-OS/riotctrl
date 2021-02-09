@@ -88,7 +88,7 @@ class RIOTCtrl():
 
     MAKE_ARGS = ()
     RESET_TARGETS = ('reset',)
-    TERM_TARGETS = ('term',)
+    TERM_TARGETS = ('cleanterm',)
 
     def __init__(self, application_directory='.', env=None):
         self._application_directory = application_directory

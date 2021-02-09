@@ -18,5 +18,7 @@ flash:
 reset:
 	kill -USR1 $(CTRLPID) 2>/dev/null || true
 
+cleanterm: term
+
 term:
 	$(Q)sh -c 'echo $$$$ > $(PIDFILE); exec $(CTRL_WRAPPER) $(APPLICATION)'

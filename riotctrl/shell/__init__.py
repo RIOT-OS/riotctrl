@@ -30,6 +30,8 @@ class ShellInteraction():
     :param riotctrl: a RIOTCtrl object
     :param prompt: the prompt of the shell (default: '> ')
     """
+    PROMPT_TIMEOUT = .5
+
     def __init__(self, riotctrl, prompt='> '):
         self.riotctrl = riotctrl
         self.prompt = prompt
@@ -45,7 +47,7 @@ class ShellInteraction():
             # consume potentially shown prompt to be on the same ground as if
             # it is not shown
             self.riotctrl.term.expect_exact([self.prompt, pexpect.TIMEOUT],
-                                            timeout=.1)
+                                            timeout=self.PROMPT_TIMEOUT)
             # enforce prompt to be shown by sending newline
             self.riotctrl.term.sendline("")
             self.replwrap = pexpect.replwrap.REPLWrapper(

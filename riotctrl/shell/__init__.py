@@ -28,9 +28,11 @@ class ShellInteraction():
     Base class for shell interactions
 
     :param riotctrl: a RIOTCtrl object
+    :param prompt: the prompt of the shell (default: '> ')
     """
-    def __init__(self, riotctrl):
+    def __init__(self, riotctrl, prompt='> '):
         self.riotctrl = riotctrl
+        self.prompt = prompt
         self.replwrap = None
         self.term_was_started = False
 
@@ -42,13 +44,13 @@ class ShellInteraction():
         if self.replwrap is None or self.replwrap.child != self.riotctrl.term:
             # consume potentially shown prompt to be on the same ground as if
             # it is not shown
-            self.riotctrl.term.expect_exact(["> ", pexpect.TIMEOUT],
+            self.riotctrl.term.expect_exact([self.prompt, pexpect.TIMEOUT],
                                             timeout=.1)
             # enforce prompt to be shown by sending newline
             self.riotctrl.term.sendline("")
             self.replwrap = pexpect.replwrap.REPLWrapper(
                 self.riotctrl.term,
-                orig_prompt="> ",
+                orig_prompt=self.prompt,
                 prompt_change=None,
             )
 

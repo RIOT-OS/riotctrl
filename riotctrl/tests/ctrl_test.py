@@ -208,3 +208,64 @@ def test_term_cleanup(app_pidfile_env):
         # File should not exist anymore so no error to create one
         # File must exist to be cleaned by tempfile
         open(tmpfile.name, 'x')
+
+
+class CtrlMock1(riotctrl.ctrl.RIOTCtrl):
+    """Mock to test RIOTCtrlFactoryBase descendents"""
+
+
+class CtrlMock2(riotctrl.ctrl.RIOTCtrl):
+    """Another mock to test RIOTCtrlFactoryBase descendents"""
+
+
+def test_board_factory_wo_board():
+    """Tests if riotctrl.ctrl.RIOTCtrlBoardFactory defaults to
+    riotctrl.ctrl.RIOTCtrl if no mapping exists for a device"""
+    factory = riotctrl.ctrl.RIOTCtrlBoardFactory()
+    assert factory.DEFAULT_CLS is riotctrl.ctrl.RIOTCtrl
+    ctrl = factory.get_ctrl()
+    # pylint: disable=unidiomatic-typecheck
+    # in this case we want to know the exact type
+    assert type(ctrl) is riotctrl.ctrl.RIOTCtrl
+
+
+def test_w_board_in_default_board_cls():
+    """Tests if riotctrl.ctrl.RIOTCtrlBoardFactory returns a class in the
+    static mapping of the factory exists"""
+    env = {'BOARD': 'mock'}
+    riotctrl.ctrl.RIOTCtrlBoardFactory.BOARD_CLS = {'mock': CtrlMock1}
+    factory = riotctrl.ctrl.RIOTCtrlBoardFactory()
+    assert 'mock' in factory.board_cls
+    ctrl = factory.get_ctrl(env=env)
+    # pylint: disable=unidiomatic-typecheck
+    # in this case we want to know the exact type
+    assert type(ctrl) is CtrlMock1
+
+
+def test_w_board_in_not_default_board_cls():
+    """Tests if riotctrl.ctrl.RIOTCtrlBoardFactory defaults to
+    riotctrl.ctrl.RIOTCtrl if no mapping exists for a device with an existing
+    mapping"""
+    env = {'BOARD': 'foobar'}
+    riotctrl.ctrl.RIOTCtrlBoardFactory.BOARD_CLS = {'mock': CtrlMock1}
+    factory = riotctrl.ctrl.RIOTCtrlBoardFactory()
+    assert 'mock' in factory.board_cls
+    ctrl = factory.get_ctrl(env=env)
+    # pylint: disable=unidiomatic-typecheck
+    # in this case we want to know the exact type
+    assert type(ctrl) is riotctrl.ctrl.RIOTCtrl
+
+
+def test_w_board_custom_board_cls():
+    """Tests if riotctrl.ctrl.RIOTCtrlBoardFactory returns a class in the
+    dynamic mapping of the factory exists"""
+    env = {'BOARD': 'mock'}
+    riotctrl.ctrl.RIOTCtrlBoardFactory.BOARD_CLS = {'mock': CtrlMock1}
+    factory = riotctrl.ctrl.RIOTCtrlBoardFactory(
+        board_cls={'mock': CtrlMock2}
+    )
+    assert 'mock' in factory.board_cls
+    ctrl = factory.get_ctrl(env=env)
+    # pylint: disable=unidiomatic-typecheck
+    # in this case we want to know the exact type
+    assert type(ctrl) is CtrlMock2

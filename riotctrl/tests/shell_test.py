@@ -5,6 +5,7 @@ import sys
 import tempfile
 
 import pytest
+from pexpect.exceptions import TIMEOUT
 
 import riotctrl.ctrl
 import riotctrl.shell
@@ -20,13 +21,14 @@ def fixture_app_pidfile_env():
         yield {'PIDFILE': tmpfile.name}
 
 
-def init_ctrl(app_pidfile_env, skip_first_prompt=False):
+def init_ctrl(app_pidfile_env, skip_first_prompt=False, prompt="> "):
     """Initializes RIOTCtrl for ShellInteraction tests"""
     env = {
         'QUIET': '1',   # pipe > in command interferes with test
         'BOARD': 'board',
         'APPLICATION': './shell.py' +
-                       (' 1' if skip_first_prompt else ''),
+                       (' 1' if skip_first_prompt else ' 0') +
+                       " --prompt=\"{}\"".format(prompt),
     }
     env.update(app_pidfile_env)
 
@@ -55,6 +57,31 @@ def test_shell_interaction_cmd_first_prompt_missing(app_pidfile_env):
         assert 'foobar' in res
         res = shell.cmd('snafoo')
         assert 'snafoo' in res
+
+
+def test_shell_interaction_cmd_different_prompt(app_pidfile_env):
+    """Test basic functionalities with the 'shell' application when the prompt
+    is not default."""
+    prompt = "my_prompt "
+    ctrl = init_ctrl(app_pidfile_env, prompt=prompt)
+    with ctrl.run_term(logfile=sys.stdout, reset=False):
+        shell = riotctrl.shell.ShellInteraction(ctrl, prompt=prompt)
+        res = shell.cmd('foobar')
+        assert 'foobar' in res
+
+
+def test_shell_interaction_cmd_prompt_timeout(app_pidfile_env):
+    """Test basic functionalities with the 'shell' application when the
+    prompt timeout is changed."""
+    prompt = "my_prompt "
+    ctrl = init_ctrl(app_pidfile_env, prompt=prompt)
+    with ctrl.run_term(logfile=sys.stdout, reset=False):
+        riotctrl.shell.ShellInteraction.PROMPT_TIMEOUT = 0
+        shell = riotctrl.shell.ShellInteraction(ctrl)
+        with pytest.raises(TIMEOUT):
+            # Fast systems may occasionally reply in 0 secs
+            for _ in range(5):
+                shell.cmd('foobar')
 
 
 def test_shell_interaction_cmd_reset_term(app_pidfile_env):

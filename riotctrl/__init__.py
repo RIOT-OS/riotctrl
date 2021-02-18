@@ -8,4 +8,4 @@ It could provide an RPC interface to a node in Python over the serial port
 and maybe also over network.
 """
 
-__version__ = '0.3.1'
+__version__ = '0.4.0'

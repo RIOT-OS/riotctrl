@@ -44,10 +44,18 @@ class ShellInteraction():
 
     def _start_replwrap(self):
         if self.replwrap is None or self.replwrap.child != self.riotctrl.term:
-            # consume potentially shown prompt to be on the same ground as if
-            # it is not shown
-            self.riotctrl.term.expect_exact([self.prompt, pexpect.TIMEOUT],
-                                            timeout=self.PROMPT_TIMEOUT)
+            # flush pexpect up to 10000 characters (arbitrarily chosen value)
+            # to start with an empty buffer. This fixes an issue where the
+            # REPLWrapper would capture an empty output for the first command
+            # and on subsequent commands always captures the output of the
+            # previous command on some RIOT-supported boards such as
+            # nucleo-f411re, b-l072z-lrwan1, and b-l475e-iot01a.
+            try:
+                self.riotctrl.term.read_nonblocking(
+                    10000, timeout=self.PROMPT_TIMEOUT
+                )
+            except pexpect.TIMEOUT:
+                pass
             # enforce prompt to be shown by sending newline
             self.riotctrl.term.sendline("")
             self.replwrap = pexpect.replwrap.REPLWrapper(

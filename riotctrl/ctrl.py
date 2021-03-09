@@ -88,6 +88,7 @@ class RIOTCtrl():
     TERM_STARTED_DELAY = int(os.environ.get('RIOT_TERM_START_DELAY') or 3)
 
     MAKE_ARGS = ()
+    FLASH_TARGETS = ('flash',)
     RESET_TARGETS = ('reset',)
     TERM_TARGETS = ('cleanterm',)
 
@@ -109,6 +110,20 @@ class RIOTCtrl():
     def board(self):
         """Return board type."""
         return self.env['BOARD']
+
+    def flash(self, *runargs, stdout=DEVNULL, stderr=DEVNULL, **runkwargs):
+        """Flash application in ``ctrl.application_directory`` to ctrl.
+
+        :param stdout: stdout parameter passed to ctrl.make_run
+                       (default: DEVNULL)
+        :param stderr: stdout parameter passed to ctrl.make_run
+                       (default: DEVNULL)
+        :param *runargs: args passed to subprocess.run
+        :param *runkwargs: kwargs passed to subprocess.run
+        :return: subprocess.CompletedProcess object
+        """
+        self.make_run(self.FLASH_TARGETS, *runargs,
+                      stdout=stdout, stderr=stderr, **runkwargs)
 
     def reset(self):
         """Reset current ctrl."""

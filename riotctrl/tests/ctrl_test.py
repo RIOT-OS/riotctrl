@@ -52,6 +52,28 @@ def test_riotctrl_curdir():
         os.environ.update(_environ)
 
 
+def test_riotctrl_flash(monkeypatch):
+    """Test the flash method of a riotctrl."""
+    args = []
+    kwargs = []
+
+    def make_run_mock(self, *_args, **_kwargs):
+        """
+        Mocks RIOTCtrl's make_run method
+        """
+        # pylint: disable=unused-argument
+        args.append(_args)
+        kwargs.append(_kwargs)
+
+    monkeypatch.setattr(riotctrl.ctrl.RIOTCtrl, 'make_run', make_run_mock)
+    ctrl = riotctrl.ctrl.RIOTCtrl(APPLICATIONS_DIR)
+    ctrl.flash()
+    assert len(args) == len(kwargs) == 1
+    assert args[-1] == (riotctrl.ctrl.RIOTCtrl.FLASH_TARGETS,)
+    assert kwargs[-1] == {'stderr': riotctrl.ctrl.DEVNULL,
+                          'stdout': riotctrl.ctrl.DEVNULL}
+
+
 @pytest.fixture(name='app_pidfile_env')
 def fixture_app_pidfile_env():
     """Environment to use application pidfile"""

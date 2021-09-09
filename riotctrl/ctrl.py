@@ -13,7 +13,7 @@ import contextlib
 import pexpect
 
 
-DEVNULL = open(os.devnull, 'w')
+DEVNULL = subprocess.DEVNULL
 MAKE = os.environ.get('MAKE', 'make')
 
 

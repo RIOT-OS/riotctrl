@@ -224,12 +224,13 @@ def test_term_cleanup(app_pidfile_env):
         with ctrl.run_term(logfile=sys.stdout) as child:
             child.expect_exact('Running')
             # Ensure script is started correctly
-            content = open(tmpfile.name, 'r', encoding='utf-8').read()
-            assert content == 'Running\n'
+            with open(tmpfile.name, 'r', encoding='utf-8') as tempfile_r:
+                assert tempfile_r.read() == 'Running\n'
 
         # File should not exist anymore so no error to create one
         # File must exist to be cleaned by tempfile
-        open(tmpfile.name, 'x')
+        with open(tmpfile.name, 'x', encoding='utf-8'):
+            pass
 
 
 class CtrlMock1(riotctrl.ctrl.RIOTCtrl):

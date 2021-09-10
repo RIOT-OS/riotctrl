@@ -27,361 +27,370 @@ Run `tox` to run the whole test suite:
       flake8: commands succeeded
       congratulations :)
 
-
 Usage
 -----
 
-RIOTCtrl provides a python object abstraction of a RIOT device. It's meant
-as a starting point for any serial abstraction on which higher level
-abstractions (like a shell) can be built.
+RIOTCtrl provides a python object abstraction of a RIOT device. It’s
+meant as a starting point for any serial abstraction on which higher
+level abstractions (like a shell) can be built.
 
-```python
-from riotctrl.ctrl import RIOTCtrl
+.. code:: python
 
-env = {'BOARD': 'native'}
-# if not running from the application directory the a path must be provided
-ctrl = RIOTCtrl(env=env, application_directory='.')
-# flash the application
-ctrl.make_run(['flash'])
-# run the terminal through a contextmanager
-with ctrl.run_term():
-    ctrl.term.expect('>')       # wait for shell to start
-    ctrl.term.sendline("help")  # send the help command
-    ctrl.term.expect('>')       # wait for the command result to finnish
-    print(ctrl.term.before)     # print the command result
-# run without a contextmanager
-ctrl.start_term()               # start a serial terminal
-ctrl.term.sendline("help")      # send the help command
-ctrl.term.expect('>')           # wait for the command result to finnish
-print(ctrl.term.before)         # print the command result
-ctrl.stop_term()                # close the terminal
-```
+   from riotctrl.ctrl import RIOTCtrl
+
+   env = {'BOARD': 'native'}
+   # if not running from the application directory the a path must be provided
+   ctrl = RIOTCtrl(env=env, application_directory='.')
+   # flash the application
+   ctrl.make_run(['flash'])
+   # run the terminal through a contextmanager
+   with ctrl.run_term():
+       ctrl.term.expect('>')       # wait for shell to start
+       ctrl.term.sendline("help")  # send the help command
+       ctrl.term.expect('>')       # wait for the command result to finnish
+       print(ctrl.term.before)     # print the command result
+   # run without a contextmanager
+   ctrl.start_term()               # start a serial terminal
+   ctrl.term.sendline("help")      # send the help command
+   ctrl.term.expect('>')           # wait for the command result to finnish
+   print(ctrl.term.before)         # print the command result
+   ctrl.stop_term()                # close the terminal
 
 Creating a RIOTCtrl object is done via environments. If empty then all
 configuration will come from the target application makefile. But any
-Make environment variable can be overridden, for example setting `BOARD`
-to a target `BOARD` which is not the default for that application.
+Make environment variable can be overridden, for example setting
+``BOARD`` to a target ``BOARD`` which is not the default for that
+application.
 
-Any make target used on RIOT devices can be used on the abstraction like:
-`make flash` => `ctrl.make_run(['flash'])`.
+Any make target used on RIOT devices can be used on the abstraction
+like: ``make flash`` => ``ctrl.make_run(['flash'])``.
 
-`ctrl.start_term()` (`make term`'s alter ego) by default spawns a pexpect child
-application. From there interactions with the application under use can be
-atomized. In the example below the output of the `"help"` command is captured:
+``ctrl.start_term()`` (``make term``\ ’s alter ego) by default spawns a
+pexpect child application. From there interactions with the application
+under use can be atomized. In the example below the output of the
+``"help"`` command is captured:
 
-### ShellInteractions
+ShellInteractions
+~~~~~~~~~~~~~~~~~
 
-RIOTCtrl provides a minimal extensions by using pexpect replwrap: "[A] Generic wrapper
-for read-eval-print-loops, a.k.a. interactive shells". This implements the perfect
-wrapper for RIOT shell commands since it will wait for a command to finish before
-returning its output.
+RIOTCtrl provides a minimal extensions by using pexpect replwrap: “[A]
+Generic wrapper for read-eval-print-loops, a.k.a. interactive shells”.
+This implements the perfect wrapper for RIOT shell commands since it
+will wait for a command to finish before returning its output.
 
-RIOT already provides a `ShellInteraction` for the `"help"` command, it can be imported as
-`from riotctrl_shell.sys import Help`.
+RIOT already provides a ``ShellInteraction`` for the ``"help"`` command,
+it can be imported as ``from riotctrl_shell.sys import Help``.
 
-The previous example can be re-written using `ShellInteraction`:
+The previous example can be re-written using ``ShellInteraction``:
 
-```python
-from riotctrl.ctrl import RIOTCtrl
-from riotctrl.shell import ShellInteraction
+.. code:: python
 
-env = {'BOARD': 'native'}
-# if not running from the application directory the a path must be provided
-ctrl = RIOTCtrl(env=env, application_directory='.')
-# flash the application
-ctrl.flash()                     # alias for ctrl.make_run(['flash'])
-# shell interaction instance
-shell = ShellInteraction(ctrl)
-shell.start_term()               # start a serial terminal
-print(shell.cmd("help"))         # print the command result
-shell.stop_term()                # close the terminal
-```
+   from riotctrl.ctrl import RIOTCtrl
+   from riotctrl.shell import ShellInteraction
 
-or using the already provided `Help` `ShellInteraction`:
+   env = {'BOARD': 'native'}
+   # if not running from the application directory the a path must be provided
+   ctrl = RIOTCtrl(env=env, application_directory='.')
+   # flash the application
+   ctrl.flash()                     # alias for ctrl.make_run(['flash'])
+   # shell interaction instance
+   shell = ShellInteraction(ctrl)
+   shell.start_term()               # start a serial terminal
+   print(shell.cmd("help"))         # print the command result
+   shell.stop_term()                # close the terminal
 
-```python
-class Help(ShellInteraction):
-    """Help ShellInteraction"""
-    @ShellInteraction.check_term
-    def help(self, timeout=-1, async_=False):
-        """Sends the reboot command via the terminal"""
-        return self.cmd("help", timeout, async_)
-```
+or using the already provided ``Help`` ``ShellInteraction``:
 
-```python
-from riotctrl.ctrl import RIOTCtrl
-from riotctrl_shell.sys import Help
+.. code:: python
 
-env = {'BOARD': 'native'}
-# if not running from the application directory the a path must be provided
-ctrl = RIOTCtrl(env=env, application_directory='.')
-# flash the application
-ctrl.flash()                     # alias for ctrl.make_run(['flash'])
-# shell interaction instance, Help uses the @ShellInteraction.check_term
-# decorator, it will start the terminal if its not yet running, and close
-# it after the command ends
-shell = Help(ctrl)              #
-print(shell.help())             # print the command result
-```
+   class Help(ShellInteraction):
+       """Help ShellInteraction"""
+       @ShellInteraction.check_term
+       def help(self, timeout=-1, async_=False):
+           """Sends the reboot command via the terminal"""
+           return self.cmd("help", timeout, async_)
 
-### Writing SAUL ShellInteraction
+.. code:: python
 
-`examples/saul` has a pretty simple shell:
+   from riotctrl.ctrl import RIOTCtrl
+   from riotctrl_shell.sys import Help
 
-```
-> saul help
-saul help
-usage: saul read|write
-> saul read
-saul read
-usage: saul read <device id>|all
-> saul write
-saul write
-usage: saul write <device id> <value 0> [<value 1> [<value 2]]
-> saul
-saul
-ID	Class		Name
-#0	SENSE_XX	x1
-#1	SENSE_XX	x2
-```
+   env = {'BOARD': 'native'}
+   # if not running from the application directory the a path must be provided
+   ctrl = RIOTCtrl(env=env, application_directory='.')
+   # flash the application
+   ctrl.flash()                     # alias for ctrl.make_run(['flash'])
+   # shell interaction instance, Help uses the @ShellInteraction.check_term
+   # decorator, it will start the terminal if its not yet running, and close
+   # it after the command ends
+   shell = Help(ctrl)              #
+   print(shell.help())             # print the command result
 
-Basically four commands a shell interaction for listing devices can be written as:
+Writing SAUL ShellInteraction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-```python
-from riotctrl.shell import ShellInteraction
+``examples/saul`` has a pretty simple shell:
 
+::
 
-class SaulShell(ShellInteraction):
-    @ShellInteraction.check_term
-    def saul_read(self, timeout=-1, async_=False):
-        return self.cmd("saul", timeout, async_)
-```
+   > saul help
+   saul help
+   usage: saul read|write
+   > saul read
+   saul read
+   usage: saul read <device id>|all
+   > saul write
+   saul write
+   usage: saul write <device id> <value 0> [<value 1> [<value 2]]
+   > saul
+   saul
+   ID  Class       Name
+   #0  SENSE_XX    x1
+   #1  SENSE_XX    x2
 
-Since all commands will share the same start: `saul`, we can write base same all on
-a basic `saul` cmd with extra args:
+Basically four commands a shell interaction for listing devices can be
+written as:
 
-```python
-from riotctrl.shell import ShellInteraction
+.. code:: python
+
+   from riotctrl.shell import ShellInteraction
 
 
-class SaulShell(ShellInteraction):
-    @ShellInteraction.check_term
-    def saul_cmd(self, args=None, timeout=-1, async_=False):
-        cmd = "saul"
-        if args is not None:
-            cmd += " {args}".format(args=" ".join(str(a) for a in args))
-        return self.cmd(cmd, timeout=timeout, async_=False)
+   class SaulShell(ShellInteraction):
+       @ShellInteraction.check_term
+       def saul_read(self, timeout=-1, async_=False):
+           return self.cmd("saul", timeout, async_)
 
-    def saul_read(self, dev_id="all", timeout=-1, async_=False):
-        return self.saul_cmd(args=("read", f"{dev_id}",), timeout=timeout, async_=async_)
+Since all commands will share the same start: ``saul``, we can write
+base same all on a basic ``saul`` cmd with extra args:
 
-    def saul_help(self, timeout=-1, async_=False):
-        return self.saul_cmd(args=("help",), timeout=timeout, async_=async_)
-```
+.. code:: python
 
-Extending with `saul_write` command is left as an exercise.
-
-### Parsing SAUL Interaction Results
-
-Parsers can be written for the result of ShellInteraction commands, these can then be returned
-in any format, for this a base class ShellInteractionParser is provided where the `parse()`
-method needs to be implemented.
-
-An example based on `saul_cmd` (which lists devices):
-
-```python
-import re
-from riotctrl.shell import ShellInteractionParser
+   from riotctrl.shell import ShellInteraction
 
 
-class SaulShellCmdParser(ShellInteractionParser):
-    pattern = re.compile(
-        r"#(?P<id>\d+)\s*(?P<class>SENSE_[^\s]*)\s+(?P<name>[^\s].*)$")
+   class SaulShell(ShellInteraction):
+       @ShellInteraction.check_term
+       def saul_cmd(self, args=None, timeout=-1, async_=False):
+           cmd = "saul"
+           if args is not None:
+               cmd += " {args}".format(args=" ".join(str(a) for a in args))
+           return self.cmd(cmd, timeout=timeout, async_=False)
 
-    def parse(self, cmd_output):
-        devices = None
-        for line in cmd_output.splitlines():
-            m = self.pattern.search(line)
-            if m is not None:
-                print("match")
-                if devices is None:
-                    devices = {}
-                devices[m.group("id")] = {"class": m.group("class"),
-                                          "name": m.group("name")}
-        return devices
-```
+       def saul_read(self, dev_id="all", timeout=-1, async_=False):
+           return self.saul_cmd(args=("read", f"{dev_id}",), timeout=timeout, async_=async_)
 
-```python
-env = {'BOARD': 'native'}
-# if not running from the application directory the a path must be provided
-ctrl = RIOTCtrl(env=env, application_directory='.')
-# flash the application
-ctrl.flash()                     # alias for ctrl.make_run(['flash'])
-# shell interaction instance
-shell = SaulShell(ctrl)
-with ctrl.run_term():
-    parser = SaulShellCmdParser()
-    print(parser.parse(shell.saul_cmd()))
-# > {'0': {'class': 'SENSE_XX', 'name': 'x2'},
-#    '1': {'class': 'SENSE_XX', 'name': 'x1'}}
-```
+       def saul_help(self, timeout=-1, async_=False):
+           return self.saul_cmd(args=("help",), timeout=timeout, async_=async_)
 
-### Interacting with multiple RIOT devices
+Extending with ``saul_write`` command is left as an exercise.
 
-RIOTCtrl only wrap's a single RIOT device, handling multiple devices is not
-yet handled in RIOTCtrl, but through different environments multiple RIOT
-devices can be created and controlled.
+Parsing SAUL Interaction Results
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Users of RIOT and [FIT IoT-LAB] may have already ran experiments on multiple
-ctrls of the same type (e.g: `iotlab-m3`) using the `IOTLAB_NODE` make
-environment variable. With this one can easily control which device it is
-targeting.
+Parsers can be written for the result of ShellInteraction commands,
+these can then be returned in any format, for this a base class
+ShellInteractionParser is provided where the ``parse()`` method needs to
+be implemented.
 
-But if running this locally, with e.g.: multiple `samr21-xpro` connected the
-serial or `DEBUG_ADAPTER_ID` must be used to flash the correct device, and for
-some `BOARD`s also the serial port `PORT`. These variables can be appended
-to the environment of the spawned object, e.g:
+An example based on ``saul_cmd`` (which lists devices):
 
-- [FIT IoT-LAB]:
+.. code:: python
 
-```python
-# first device using dwm1001-1 on the saclay site
-env1 = {'BOARD': 'dwm10001', 'IOTLAB_NODE': 'dwm1001-1.saclay.iot-lab.info'}
-ctrl1 = RIOTCtrl(env=env1, application_directory='.')
-# second device using dwm1001-2 on the saclay site
-env2 = {'BOARD': 'dwm10001', 'IOTLAB_NODE': 'dwm1001-2.saclay.iot-lab.info'}
-ctrl2 = RIOTCtrl(env=env2, application_directory='.')
-```
+   import re
+   from riotctrl.shell import ShellInteractionParser
 
-- locally:
 
-```python
-# first samr21-xpro
-env1 = {'BOARD': 'samr21-xpro', 'DEBUG_ADAPTER_ID': 'ATML2127031800004957'}
-ctrl1 = RIOTCtrl(env=env1, application_directory='.')
-# second samr21-xpro
-env2 = {'BOARD': 'samr21-xpro', 'DEBUG_ADAPTER_ID': 'ATML2127031800011458'}
-ctrl2 = RIOTCtrl(env=env2, application_directory='.')
-```
+   class SaulShellCmdParser(ShellInteractionParser):
+       pattern = re.compile(
+           r"#(?P<id>\d+)\s*(?P<class>SENSE_[^\s]*)\s+(?P<name>[^\s].*)$")
 
-For the advanced user one could also do as suggested in [multiple-boards-udev]
-and use an easy to remember variable to identify BOARDs (which would allow
-also running the same python code on different setups), if following the
-above guide:
+       def parse(self, cmd_output):
+           devices = None
+           for line in cmd_output.splitlines():
+               m = self.pattern.search(line)
+               if m is not None:
+                   print("match")
+                   if devices is None:
+                       devices = {}
+                   devices[m.group("id")] = {"class": m.group("class"),
+                                             "name": m.group("name")}
+           return devices
 
-```python
-# first samr21-xpro
-env1 = {'BOARD': 'samr21-xpro', 'BOARD_NUM': 0}
-ctrl1 = RIOTCtrl(env=env1, application_directory='.')
-# second samr21-xpro
-env2 = {'BOARD': 'samr21-xpro', 'BOARD_NUM': 1}
-ctrl2 = RIOTCtrl(env=env2, application_directory='.')
-```
+.. code:: python
 
-### Factories
+   env = {'BOARD': 'native'}
+   # if not running from the application directory the a path must be provided
+   ctrl = RIOTCtrl(env=env, application_directory='.')
+   # flash the application
+   ctrl.flash()                     # alias for ctrl.make_run(['flash'])
+   # shell interaction instance
+   shell = SaulShell(ctrl)
+   with ctrl.run_term():
+       parser = SaulShellCmdParser()
+       print(parser.parse(shell.saul_cmd()))
+   # > {'0': {'class': 'SENSE_XX', 'name': 'x2'},
+   #    '1': {'class': 'SENSE_XX', 'name': 'x1'}}
+
+Interacting with multiple RIOT devices
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+RIOTCtrl only wrap’s a single RIOT device, handling multiple devices is
+not yet handled in RIOTCtrl, but through different environments multiple
+RIOT devices can be created and controlled.
+
+Users of RIOT and `FIT IoT-LAB <https://www.iot-lab.info/>`__ may have
+already ran experiments on multiple ctrls of the same type (e.g:
+``iotlab-m3``) using the ``IOTLAB_NODE`` make environment variable. With
+this one can easily control which device it is targeting.
+
+But if running this locally, with e.g.: multiple ``samr21-xpro``
+connected the serial or ``DEBUG_ADAPTER_ID`` must be used to flash the
+correct device, and for some ``BOARD``\ s also the serial port ``PORT``.
+These variables can be appended to the environment of the spawned
+object, e.g:
+
+-
+
+.. code:: python
+
+   # first device using dwm1001-1 on the saclay site
+   env1 = {'BOARD': 'dwm10001', 'IOTLAB_NODE': 'dwm1001-1.saclay.iot-lab.info'}
+   ctrl1 = RIOTCtrl(env=env1, application_directory='.')
+   # second device using dwm1001-2 on the saclay site
+   env2 = {'BOARD': 'dwm10001', 'IOTLAB_NODE': 'dwm1001-2.saclay.iot-lab.info'}
+   ctrl2 = RIOTCtrl(env=env2, application_directory='.')
+
+-  locally:
+
+.. code:: python
+
+   # first samr21-xpro
+   env1 = {'BOARD': 'samr21-xpro', 'DEBUG_ADAPTER_ID': 'ATML2127031800004957'}
+   ctrl1 = RIOTCtrl(env=env1, application_directory='.')
+   # second samr21-xpro
+   env2 = {'BOARD': 'samr21-xpro', 'DEBUG_ADAPTER_ID': 'ATML2127031800011458'}
+   ctrl2 = RIOTCtrl(env=env2, application_directory='.')
+
+For the advanced user one could also do as suggested in
+`multiple-boards-udev <https://api.riot-os.org/advanced-build-system-tricks.html#multiple-boards-udev>`__
+and use an easy to remember variable to identify BOARDs (which would
+allow also running the same python code on different setups), if
+following the above guide:
+
+.. code:: python
+
+   # first samr21-xpro
+   env1 = {'BOARD': 'samr21-xpro', 'BOARD_NUM': 0}
+   ctrl1 = RIOTCtrl(env=env1, application_directory='.')
+   # second samr21-xpro
+   env2 = {'BOARD': 'samr21-xpro', 'BOARD_NUM': 1}
+   ctrl2 = RIOTCtrl(env=env2, application_directory='.')
+
+Factories
+~~~~~~~~~
 
 The same tasks are done multiple times creating the object flashing it,
 starting the terminal and making sure its clean up. Once experiments
-grow and take over multiple ctrls this can become tedious, using a Factory
-together with a context manager can help with this.
+grow and take over multiple ctrls this can become tedious, using a
+Factory together with a context manager can help with this.
 
-Going back to our example lets write a factory inheriting from `RIOTCtrlFactoryBase`:
+Going back to our example lets write a factory inheriting from
+``RIOTCtrlFactoryBase``:
 
-```python
-from contextlib import ContextDecorator
-from riotctrl.ctrl import RIOTCtrl, RIOTCtrlBoardFactory
-from riotctrl_ctrl import native
+.. code:: python
 
-class RIOTCtrlAppFactory(RIOTCtrlBoardFactory, ContextDecorator):
+   from contextlib import ContextDecorator
+   from riotctrl.ctrl import RIOTCtrl, RIOTCtrlBoardFactory
+   from riotctrl_ctrl import native
 
-    def __init__(self):
-        super().__init__(board_cls={
-            'native': native.NativeRIOTCtrl,
-        })
-        self.ctrl_list = list()
+   class RIOTCtrlAppFactory(RIOTCtrlBoardFactory, ContextDecorator):
 
-    def __enter__(self):
-        return self
+       def __init__(self):
+           super().__init__(board_cls={
+               'native': native.NativeRIOTCtrl,
+           })
+           self.ctrl_list = list()
 
-    def __exit__(self, *exc):
-        for ctrl in self.ctrl_list:
-            ctrl.stop_term()
+       def __enter__(self):
+           return self
 
-    def get_ctrl(self, application_directory='.', env=None):
-        # retrieve a RIOTCtrl Object
-        ctrl = super().get_ctrl(
-            env=env,
-            application_directory=application_directory
-        )
-        # append ctrl to list
-        self.ctrl_list.append(ctrl)
-        # flash and start terminal
-        ctrl.flash()
-        ctrl.start_term()
-        # return ctrl with started terminal
-        return ctrl
-```
+       def __exit__(self, *exc):
+           for ctrl in self.ctrl_list:
+               ctrl.stop_term()
+
+       def get_ctrl(self, application_directory='.', env=None):
+           # retrieve a RIOTCtrl Object
+           ctrl = super().get_ctrl(
+               env=env,
+               application_directory=application_directory
+           )
+           # append ctrl to list
+           self.ctrl_list.append(ctrl)
+           # flash and start terminal
+           ctrl.flash()
+           ctrl.start_term()
+           # return ctrl with started terminal
+           return ctrl
 
 And the script itself can be re-written as:
 
-```python
-with RIOTCtrlAppFactory() as factory:
-    env = {'BOARD': 'native'}
-    ctrl = factory.get_ctrl(env=env)
-    shell = SaulShell(ctrl)
-    parser = SaulShellCmdParser()
-    print(parser.parse(shell.saul_cmd()))
-```
+.. code:: python
 
-### GNRC Networking example native
+   with RIOTCtrlAppFactory() as factory:
+       env = {'BOARD': 'native'}
+       ctrl = factory.get_ctrl(env=env)
+       shell = SaulShell(ctrl)
+       parser = SaulShellCmdParser()
+       print(parser.parse(shell.saul_cmd()))
 
-Lets put all the above into practice and script an experiment verifying connectivity
-between two ctrls, here multiple `native` instance will be used.
+GNRC Networking example native
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Lets put all the above into practice and script an experiment verifying
+connectivity between two ctrls, here multiple ``native`` instance will
+be used.
 
 First create two tap interfaces:
 
-```shell
-sudo ${RIOTBASE}/dist/tools/tapsetup/tapsetup -c 2
-```
+.. code:: shell
 
-Then we can ping and parse the results asserting than packet loss is under a threshold
-or that an mount of responses was received..
+   sudo ${RIOTBASE}/dist/tools/tapsetup/tapsetup -c 2
 
-```python
-from riotctrl_shell.gnrc import GNRCICMPv6Echo, GNRCICMPv6EchoParser
-from riotctrl_shell.netif import Ifconfig
+Then we can ping and parse the results asserting than packet loss is
+under a threshold or that an mount of responses was received..
 
+.. code:: python
 
-class Shell(ifconfig, GNRCICMPv6Echo):
-  pass
+   from riotctrl_shell.gnrc import GNRCICMPv6Echo, GNRCICMPv6EchoParser
+   from riotctrl_shell.netif import Ifconfig
 
 
-with RIOTCtrlAppFactory() as factory:
-    # Create two native instances, specifying the tap interface
-    native_0 = factory.get_ctrl(env={'BOARD':'native', 'PORT':'tap0'})
-    native_1 = factory.get_ctrl(env={'BOARD':'native', 'PORT':'tap1'})
-    # `NativeRIOTCtrl` allows for `make reset` with `native`
-    native_0.reset()
-    native_1.reset()
-    # Perform a multicast ping and parse results
-    pinger = Shell(native_0)
-    parser = GNRCICMPv6EchoParser()
-    result = parser.parse(pinger.ping6("ff02::1"))
-    assert result['stats']['packet_loss'] < 10    # assert packetloss is under 10%
-    assert result['stats']['rx'] > 0              # assert at least one responder
-```
-
-A more complex example can be seen in the Release Tests: [04-single-hop-6lowpan-icmp]
-
-### Examples
-
-* pytest: [ReleaseSpecs]
-* unittests: [tests/turo], [tests/congure_test]
+   class Shell(ifconfig, GNRCICMPv6Echo):
+     pass
 
 
-[FIT IoT-LAB]: https://www.iot-lab.info/
-[multiple-boards-udev]: https://api.riot-os.org/advanced-build-system-tricks.html#multiple-boards-udev
-[ReleaseSpecs]: https://github.com/RIOT-OS/Release-Specs
-[tests/turo]: https://github.com/RIOT-OS/RIOT/blob/master/tests/turo/tests/01-run.py
-[tests/congure_test]: https://github.com/RIOT-OS/RIOT/blob/master/tests/congure_test/tests/01-run.py
-[04-single-hop-6lowpan-icmp]: https://github.com/RIOT-OS/Release-Specs/blob/master/04-single-hop-6lowpan-icmp/test_spec04.py
+   with RIOTCtrlAppFactory() as factory:
+       # Create two native instances, specifying the tap interface
+       native_0 = factory.get_ctrl(env={'BOARD':'native', 'PORT':'tap0'})
+       native_1 = factory.get_ctrl(env={'BOARD':'native', 'PORT':'tap1'})
+       # `NativeRIOTCtrl` allows for `make reset` with `native`
+       native_0.reset()
+       native_1.reset()
+       # Perform a multicast ping and parse results
+       pinger = Shell(native_0)
+       parser = GNRCICMPv6EchoParser()
+       result = parser.parse(pinger.ping6("ff02::1"))
+       assert result['stats']['packet_loss'] < 10    # assert packetloss is under 10%
+       assert result['stats']['rx'] > 0              # assert at least one responder
+
+A more complex example can be seen in the Release Tests:
+`04-single-hop-6lowpan-icmp <https://github.com/RIOT-OS/Release-Specs/blob/master/04-single-hop-6lowpan-icmp/test_spec04.py>`__
+
+Examples
+~~~~~~~~
+
+-  pytest: `ReleaseSpecs <https://github.com/RIOT-OS/Release-Specs>`__
+-  unittests:
+   `tests/turo <https://github.com/RIOT-OS/RIOT/blob/master/tests/turo/tests/01-run.py>`__,
+   `tests/congure_test <https://github.com/RIOT-OS/RIOT/blob/master/tests/congure_test/tests/01-run.py>`__

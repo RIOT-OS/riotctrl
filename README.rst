@@ -250,7 +250,7 @@ correct device, and for some ``BOARD``\ s also the serial port ``PORT``.
 These variables can be appended to the environment of the spawned
 object, e.g:
 
--
+-  `FIT IoT-LAB < https://www.iot-lab.info>`__:
 
 .. code:: python
 

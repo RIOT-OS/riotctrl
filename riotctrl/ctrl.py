@@ -148,14 +148,21 @@ class RIOTCtrl():
         The function is blocking until it is ready.
         It waits some time until the terminal is ready and resets the ctrl.
         """
+        self.start_term_wo_sleep(**spawnkwargs)
+        # on many platforms, the termprog needs a short while to be ready
+        time.sleep(self.TERM_STARTED_DELAY)
+
+    def start_term_wo_sleep(self, **spawnkwargs):
+        """Start the terminal.
+
+        The function is blocking until it is ready.
+        It does not wait until the terminal is ready and resets the ctrl.
+        """
         self.stop_term()
 
         term_cmd = self.make_command(self.TERM_TARGETS)
         self.term = self.TERM_SPAWN_CLASS(term_cmd[0], args=term_cmd[1:],
                                           env=self.env, **spawnkwargs)
-
-        # on many platforms, the termprog needs a short while to be ready
-        time.sleep(self.TERM_STARTED_DELAY)
 
     def _term_pid(self):
         """Terminal pid or None."""

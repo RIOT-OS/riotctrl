@@ -30,7 +30,7 @@ Run `tox` to run the whole test suite:
 Usage
 -----
 
-RIOTCtrl provides a python object abstraction of a RIOT device. It's
+RIOTCtrl provides a python object abstraction of a RIOT device. It’s
 meant as a starting point for any serial abstraction on which higher
 level abstractions (like a shell) can be built.
 
@@ -56,16 +56,14 @@ level abstractions (like a shell) can be built.
    print(ctrl.term.before)         # print the command result
    ctrl.stop_term()                # close the terminal
 
-Creating a RIOTCtrl object is done via environment variables. If empty then all
+Creating a RIOTCtrl object is done via environments. If empty then all
 configuration will come from the target application makefile. But any
 Make environment variable can be overridden, for example setting
 ``BOARD`` to a target ``BOARD`` which is not the default for that
 application.
 
 Any make target used on RIOT devices can be used on the abstraction
-like: ``make flash`` => ``ctrl.make_run(['flash'])``. Some make
-targets are even further abstracted, e.g. ``ctrl.make_run(['flash'])``
-can also be executed using the ``ctrl.flash()`` method.
+like: ``make flash`` => ``ctrl.make_run(['flash'])``.
 
 ``ctrl.start_term()`` (``make term``\ ’s alter ego) by default spawns a
 `pexpect <https://pexpect.readthedocs.io/en/stable/overview.html>`__
@@ -103,7 +101,7 @@ The previous example can be re-written using ``ShellInteraction``:
    print(shell.cmd("help"))         # print the command result
    shell.stop_term()                # close the terminal
 
-or using the already provided ``Help` <https://github.com/RIOT-OS/RIOT/blob/master/dist/pythonlibs/riotctrl_shell/sys.py#L16-L21>`
+or using the already provided ``Help` <https://github.com/RIOT-OS/RIOT/blob/master/dist/pythonlibs/riotctrl_shell/sys.py#L16-L21>`__
 ``ShellInteraction``:
 
 .. code:: python
@@ -306,7 +304,7 @@ Going back to our example lets write a factory inheriting from
            super().__init__(board_cls={
                'native': native.NativeRIOTCtrl,
            })
-           self.ctrl_list = []
+           self.ctrl_list = list()
 
        def __enter__(self):
            return self

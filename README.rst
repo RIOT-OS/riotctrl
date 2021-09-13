@@ -30,7 +30,7 @@ Run `tox` to run the whole test suite:
 Usage
 -----
 
-RIOTCtrl provides a python object abstraction of a RIOT device. It’s
+RIOTCtrl provides a python object abstraction of a RIOT device. It's
 meant as a starting point for any serial abstraction on which higher
 level abstractions (like a shell) can be built.
 

@@ -405,3 +405,15 @@ Examples
 -  unittests:
     `tests/turo <https://github.com/RIOT-OS/RIOT/blob/master/tests/turo/tests/01-run.py>`__,
     `tests/congure_test <https://github.com/RIOT-OS/RIOT/blob/master/tests/congure_test/tests/01-run.py>`__
+
+Discussion
+~~~~~~~~~~
+
+RIOTCtrl base class is not tied into having a serial based interaction, its
+the most common usage so far but a new interface or ``Interaction`` could
+use different different transports (e.g. COAP), and does not need to provide
+a CLI type interface.
+
+Test applications could also use Structured Output, like RIOT's
+`turo <https://doc.riot-os.org/group__test__utils__result__output.html>__`,
+and in this case parsing CBOR/JSON/XML output could be close to a NOP.

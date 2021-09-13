@@ -80,8 +80,12 @@ RIOTCtrl provides a minimal extensions by using:
 This implements a nice wrapper for RIOT shell commands since it will wait for a
 command to finish before returning its output.
 
-RIOT already provides a ``ShellInteraction`` for the ``"help"`` command,
-it can be imported as ``from riotctrl_shell.sys import Help``.
+RIOT already provides a ``ShellInteraction`` for the ``"help"`` command as well
+as many others. To make importing them as ``from riotctrl_shell.sys import Help``
+possible RIOT's ` `pythonlibs <https://github.com/RIOT-OS/RIOT/tree/master/dist/pythonlibs>`__
+needs to be part of the `PYTHONPATH`, this can be done by setting in the environment
+`PYTHONPATH=$PYTHONPATH:${RIOTBASE}/dist/pythonlibs` or doing so in the
+script `sys.path.append('/path/to/RIOTBASE/dist/pythonlibs')`
 
 The previous example can be re-written using ``ShellInteraction``:
 

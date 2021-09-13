@@ -63,7 +63,9 @@ Make environment variable can be overridden, for example setting
 application.
 
 Any make target used on RIOT devices can be used on the abstraction
-like: ``make flash`` => ``ctrl.make_run(['flash'])``.
+like: ``make flash`` => ``ctrl.make_run(['flash'])``. Some make
+targets are even further abstracted, e.g. ``ctrl.make_run(['flash'])``
+can also be executed using the ``ctrl.flash()`` method.
 
 ``ctrl.start_term()`` (``make term``\ ’s alter ego) by default spawns a
 pexpect child application. From there interactions with the application

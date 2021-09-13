@@ -117,7 +117,7 @@ or using the already provided `Help <https://github.com/RIOT-OS/RIOT/blob/master
    # shell interaction instance, Help uses the @ShellInteraction.check_term
    # decorator, it will start the terminal if its not yet running, and close
    # it after the command ends
-   shell = Help(ctrl)              #
+   shell = Help(ctrl)              # create ShellInteraction
    print(shell.help())             # print the command result
 
 Writing SAUL ShellInteraction

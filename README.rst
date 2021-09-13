@@ -68,17 +68,19 @@ targets are even further abstracted, e.g. ``ctrl.make_run(['flash'])``
 can also be executed using the ``ctrl.flash()`` method.
 
 ``ctrl.start_term()`` (``make term``\ ’s alter ego) by default spawns a
-pexpect child application. From there interactions with the application
+`pexpect <https://pexpect.readthedocs.io/en/stable/overview.html>`__
+child application. From there interactions with the application
 under use can be atomized. In the example below the output of the
 ``"help"`` command is captured:
 
 ShellInteractions
 ~~~~~~~~~~~~~~~~~
 
-RIOTCtrl provides a minimal extensions by using pexpect replwrap: “[A]
-Generic wrapper for read-eval-print-loops, a.k.a. interactive shells”.
-This implements the perfect wrapper for RIOT shell commands since it
-will wait for a command to finish before returning its output.
+RIOTCtrl provides a minimal extensions by using:
+`pexpect replwrap <https://pexpect.readthedocs.io/en/stable/api/replwrap.html>`__
+“[A] Generic wrapper for read-eval-print-loops, a.k.a. interactive shells”.
+This implements a nice wrapper for RIOT shell commands since it will wait for a
+command to finish before returning its output.
 
 RIOT already provides a ``ShellInteraction`` for the ``"help"`` command,
 it can be imported as ``from riotctrl_shell.sys import Help``.
@@ -101,16 +103,8 @@ The previous example can be re-written using ``ShellInteraction``:
    print(shell.cmd("help"))         # print the command result
    shell.stop_term()                # close the terminal
 
-or using the already provided ``Help`` ``ShellInteraction``:
-
-.. code:: python
-
-   class Help(ShellInteraction):
-       """Help ShellInteraction"""
-       @ShellInteraction.check_term
-       def help(self, timeout=-1, async_=False):
-           """Sends the reboot command via the terminal"""
-           return self.cmd("help", timeout, async_)
+or using the already provided ``Help` <https://github.com/RIOT-OS/RIOT/blob/master/dist/pythonlibs/riotctrl_shell/sys.py#L16-L21>`
+``ShellInteraction``:
 
 .. code:: python
 

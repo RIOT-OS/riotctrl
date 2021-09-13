@@ -101,7 +101,7 @@ The previous example can be re-written using ``ShellInteraction``:
    print(shell.cmd("help"))         # print the command result
    shell.stop_term()                # close the terminal
 
-or using the already provided ``Help` <https://github.com/RIOT-OS/RIOT/blob/master/dist/pythonlibs/riotctrl_shell/sys.py#L16-L21>`__
+or using the already provided `Help <https://github.com/RIOT-OS/RIOT/blob/master/dist/pythonlibs/riotctrl_shell/sys.py#L16-L21>`__
 ``ShellInteraction``:
 
 .. code:: python

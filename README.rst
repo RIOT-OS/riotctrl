@@ -353,11 +353,19 @@ Lets put all the above into practice and script an experiment verifying
 connectivity between two ctrls, here multiple ``native`` instance will
 be used.
 
-First create two tap interfaces:
+First create two tap interfaces connected through a bridge interface,
+e.g. on linux:
 
 .. code:: shell
 
-   sudo ${RIOTBASE}/dist/tools/tapsetup/tapsetup -c 2
+   ip link add name tapbr0 type bridge
+   ip link set tapbr0 up
+   ip tuntap add dev tap0 mode tap user $USER
+   ip tuntap add dev tap1 mode tap user $USER
+   ip link set dev tap0 master tapbr0
+   ip link set dev tap1 master tapbr0
+   ip link set dev tap0 up
+   ip link set dev tap1 up
 
 Then we can ping and parse the results asserting than packet loss is
 under a threshold or that an mount of responses was received..

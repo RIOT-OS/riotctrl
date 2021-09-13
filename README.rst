@@ -177,8 +177,6 @@ base same all on a basic ``saul`` cmd with extra args:
        def saul_help(self, timeout=-1, async_=False):
            return self.saul_cmd(args=("help",), timeout=timeout, async_=async_)
 
-Extending with ``saul_write`` command is left as an exercise.
-
 Parsing SAUL Interaction Results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -290,7 +288,8 @@ grow and take over multiple ctrls this can become tedious, using a
 Factory together with a context manager can help with this.
 
 Going back to our example lets write a factory inheriting from
-``RIOTCtrlFactoryBase``:
+``RIOTCtrlBoardFactoryBase`` (or directly from ``RIOTCtrlFactoryBase``
+base class).
 
 .. code:: python
 

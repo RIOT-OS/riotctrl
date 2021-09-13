@@ -56,7 +56,7 @@ level abstractions (like a shell) can be built.
    print(ctrl.term.before)         # print the command result
    ctrl.stop_term()                # close the terminal
 
-Creating a RIOTCtrl object is done via environments. If empty then all
+Creating a RIOTCtrl object is done via environment variables. If empty then all
 configuration will come from the target application makefile. But any
 Make environment variable can be overridden, for example setting
 ``BOARD`` to a target ``BOARD`` which is not the default for that

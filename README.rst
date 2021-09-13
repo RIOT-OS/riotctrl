@@ -82,10 +82,10 @@ command to finish before returning its output.
 
 RIOT already provides a ``ShellInteraction`` for the ``"help"`` command as well
 as many others. To make importing them as ``from riotctrl_shell.sys import Help``
-possible RIOT's ` `pythonlibs <https://github.com/RIOT-OS/RIOT/tree/master/dist/pythonlibs>`__
-needs to be part of the `PYTHONPATH`, this can be done by setting in the environment
-`PYTHONPATH=$PYTHONPATH:${RIOTBASE}/dist/pythonlibs` or doing so in the
-script `sys.path.append('/path/to/RIOTBASE/dist/pythonlibs')`
+possible RIOT's `pythonlibs <https://github.com/RIOT-OS/RIOT/tree/master/dist/pythonlibs>`__
+needs to be part of the ``PYTHONPATH``, this can be done by setting in the environment
+``PYTHONPATH=$PYTHONPATH:${RIOTBASE}/dist/pythonlibs`` or doing so in the
+script ``sys.path.append('/path/to/RIOTBASE/dist/pythonlibs')``
 
 The previous example can be re-written using ``ShellInteraction``:
 
@@ -419,5 +419,5 @@ use different different transports (e.g. COAP), and does not need to provide
 a CLI type interface.
 
 Test applications could also use Structured Output, like RIOT's
-`turo <https://doc.riot-os.org/group__test__utils__result__output.html>__`,
+`turo <https://doc.riot-os.org/group__test__utils__result__output.html>`__,
 and in this case parsing CBOR/JSON/XML output could be close to a NOP.

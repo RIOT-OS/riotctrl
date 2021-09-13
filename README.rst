@@ -125,7 +125,7 @@ Writing ShellInteraction
 
 Lets use this simple C shell application as an example:
 
-:: code:: c
+.. code:: c
 
     #include <stdio.h>
     #include <stdlib.h>

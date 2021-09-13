@@ -310,7 +310,7 @@ Going back to our example lets write a factory inheriting from
            super().__init__(board_cls={
                'native': native.NativeRIOTCtrl,
            })
-           self.ctrl_list = list()
+           self.ctrl_list = []
 
        def __enter__(self):
            return self

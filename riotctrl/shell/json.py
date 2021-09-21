@@ -4,6 +4,7 @@ JSON parser for riotctrl shell interactions
 
 import json
 import logging
+
 try:
     import rapidjson
 except ImportError:
@@ -15,6 +16,7 @@ from . import ShellInteractionParser
 # pylint: disable=too-few-public-methods
 class JSONShellInteractionParser(ShellInteractionParser):
     """Allows for parsing result strings of a ShellInteraction as JSON"""
+
     json_module = json
 
     def parse(self, cmd_output):
@@ -34,6 +36,7 @@ class RapidJSONShellInteractionParser(JSONShellInteractionParser):
 
     .. _rapidjson: https://rapidjson.org/
     """
+
     json_module = rapidjson
 
     def __init__(self, *args, **kwargs):
@@ -41,9 +44,11 @@ class RapidJSONShellInteractionParser(JSONShellInteractionParser):
         self._parser_args = {}
         self._parser_kwargs = {}
         if self.json_module is None:
-            self.logger.warning("%s initialized without rapidjson installed\n"
-                                "Please install with riotctrl[rapidjson]",
-                                type(self).__name__)
+            self.logger.warning(
+                "%s initialized without rapidjson installed\n"
+                "Please install with riotctrl[rapidjson]",
+                type(self).__name__,
+            )
         super().__init__(*args, **kwargs)
 
     def set_parser_args(self, *args, **kwargs):
@@ -65,5 +70,6 @@ class RapidJSONShellInteractionParser(JSONShellInteractionParser):
         :param cmd_output (str): Output of ShellInteraction::cmd(). Must be
                                  valid JSON
         """
-        return self.json_module.loads(cmd_output, *self._parser_args,
-                                      **self._parser_kwargs)
+        return self.json_module.loads(
+            cmd_output, *self._parser_args, **self._parser_kwargs
+        )

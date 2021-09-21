@@ -28,6 +28,7 @@ setup(
     version=get_version(PACKAGE),
     description='RIOT Ctrl - A RIOT node python abstraction',
     long_description=open('README.rst').read(),
+    long_description_content_type="text/x-rst",
     author='Gaëtan Harter, Leandro Lanzieri, Martine S. Lenders',
     author_email='gaetan.harter@fu-berlin.de, '
                  'leandro.lanzieri@haw-hamburg.de, '

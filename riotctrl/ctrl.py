@@ -30,14 +30,14 @@ class TermSpawn(pexpect.spawn):
     """
 
     def __init__(
-        self,  # pylint:disable=too-many-arguments
+        self,
         command,
         timeout=10,
         echo=False,
         encoding="utf-8",
         codec_errors="replace",
         **kwargs
-    ):
+    ):  # pylint:disable=too-many-arguments
         super().__init__(
             command,
             timeout=timeout,

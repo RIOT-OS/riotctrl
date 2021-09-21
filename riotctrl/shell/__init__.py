@@ -23,16 +23,17 @@ class ShellInteractionParser(abc.ABC):
         """
 
 
-class ShellInteraction():
+class ShellInteraction:
     """
     Base class for shell interactions
 
     :param riotctrl: a RIOTCtrl object
     :param prompt: the prompt of the shell (default: '> ')
     """
-    PROMPT_TIMEOUT = .5
 
-    def __init__(self, riotctrl, prompt='> '):
+    PROMPT_TIMEOUT = 0.5
+
+    def __init__(self, riotctrl, prompt="> "):
         self.riotctrl = riotctrl
         self.prompt = prompt
         self.replwrap = None
@@ -51,9 +52,7 @@ class ShellInteraction():
             # previous command on some RIOT-supported boards such as
             # nucleo-f411re, b-l072z-lrwan1, and b-l475e-iot01a.
             try:
-                self.riotctrl.term.read_nonblocking(
-                    10000, timeout=self.PROMPT_TIMEOUT
-                )
+                self.riotctrl.term.read_nonblocking(10000, timeout=self.PROMPT_TIMEOUT)
             except pexpect.TIMEOUT:
                 pass
             # enforce prompt to be shown by sending newline
@@ -82,6 +81,7 @@ class ShellInteraction():
         """
         Decorator to ensure the terminal is running and stopped
         """
+
         def wrapper(self, *args, **kwargs):
             if self.riotctrl.term is None:
                 with self.riotctrl.run_term(reset, **startkwargs):

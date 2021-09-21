@@ -9,10 +9,10 @@ def main():
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     signal.signal(signal.SIGTERM, signal.SIG_IGN)
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
-    print('Kill me with SIGKILL!')
-    print('My PID: %u' % os.getpid())
+    print("Kill me with SIGKILL!")
+    print("My PID: %u" % os.getpid())
     signal.pause()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

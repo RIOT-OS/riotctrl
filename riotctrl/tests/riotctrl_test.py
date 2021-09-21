@@ -7,4 +7,4 @@ def test_version():
 
     Goal is to have a test to run the test environment.
     """
-    assert getattr(riotctrl, '__version__', None) is not None
+    assert getattr(riotctrl, "__version__", None) is not None

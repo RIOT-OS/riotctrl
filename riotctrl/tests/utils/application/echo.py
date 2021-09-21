@@ -6,11 +6,11 @@ import sys
 
 def main():
     """Print some header and echo the output."""
-    print('Starting RIOT Ctrl')
-    print('This example will echo')
+    print("Starting RIOT Ctrl")
+    print("This example will echo")
     while True:
         print(input())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

@@ -24,11 +24,12 @@ def test_json_shell_interaction_parser():
 def test_rapid_json_shell_interaction_parser_wo_rapidjson(caplog):
     """Test RapidJSONShellInteractionParser initialization without rapidjson
     installed"""
-    with caplog.at_level(logging.WARNING,
-                         logger='RapidJSONShellInteractionParser'):
+    with caplog.at_level(logging.WARNING, logger="RapidJSONShellInteractionParser"):
         parser = riotctrl.shell.json.RapidJSONShellInteractionParser()
-    assert "RapidJSONShellInteractionParser initialized without " \
+    assert (
+        "RapidJSONShellInteractionParser initialized without "
         "rapidjson installed" in caplog.text
+    )
     with pytest.raises(AttributeError):
         parser.parse('[{"test": [1234, {"obj": {"val": 3.14}}]}]')
 
@@ -41,8 +42,7 @@ def test_rapid_json_shell_interaction_parser_w_rapidjson(caplog):
     import rapidjson
 
     assert not caplog.text
-    with caplog.at_level(logging.WARNING,
-                         logger='RapidJSONShellInteractionParser'):
+    with caplog.at_level(logging.WARNING, logger="RapidJSONShellInteractionParser"):
         parser = riotctrl.shell.json.RapidJSONShellInteractionParser()
     assert not caplog.text
     res = parser.parse('[{"test": [1234, {"obj": {"val": 3.14}}]}]')

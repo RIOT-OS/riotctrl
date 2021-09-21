@@ -14,7 +14,7 @@ import pexpect
 
 
 DEVNULL = subprocess.DEVNULL
-MAKE = os.environ.get('MAKE', 'make')
+MAKE = os.environ.get("MAKE", "make")
 
 
 class TermSpawn(pexpect.spawn):
@@ -29,12 +29,23 @@ class TermSpawn(pexpect.spawn):
       * remove exception context from inside pexpect implementation
     """
 
-    def __init__(self,  # pylint:disable=too-many-arguments
-                 command, timeout=10, echo=False,
-                 encoding='utf-8', codec_errors='replace', **kwargs):
-        super().__init__(command, timeout=timeout, echo=echo,
-                         encoding=encoding, codec_errors=codec_errors,
-                         **kwargs)
+    def __init__(
+        self,  # pylint:disable=too-many-arguments
+        command,
+        timeout=10,
+        echo=False,
+        encoding="utf-8",
+        codec_errors="replace",
+        **kwargs
+    ):
+        super().__init__(
+            command,
+            timeout=timeout,
+            echo=echo,
+            encoding=encoding,
+            codec_errors=codec_errors,
+            **kwargs
+        )
 
     def expect(self, pattern, *args, **kwargs):
         # pylint:disable=signature-differs
@@ -66,7 +77,7 @@ class TermSpawn(pexpect.spawn):
         return exc
 
 
-class RIOTCtrl():
+class RIOTCtrl:
     """Class abstracting a RIOTctrl in an application.
 
     This should abstract the build system integration.
@@ -85,14 +96,14 @@ class RIOTCtrl():
     """
 
     TERM_SPAWN_CLASS = TermSpawn
-    TERM_STARTED_DELAY = int(os.environ.get('RIOT_TERM_START_DELAY') or 3)
+    TERM_STARTED_DELAY = int(os.environ.get("RIOT_TERM_START_DELAY") or 3)
 
     MAKE_ARGS = ()
-    FLASH_TARGETS = ('flash',)
-    RESET_TARGETS = ('reset',)
-    TERM_TARGETS = ('cleanterm',)
+    FLASH_TARGETS = ("flash",)
+    RESET_TARGETS = ("reset",)
+    TERM_TARGETS = ("cleanterm",)
 
-    def __init__(self, application_directory='.', env=None):
+    def __init__(self, application_directory=".", env=None):
         self._application_directory = application_directory
 
         self.env = os.environ.copy()
@@ -109,7 +120,7 @@ class RIOTCtrl():
 
     def board(self):
         """Return board type."""
-        return self.env['BOARD']
+        return self.env["BOARD"]
 
     def flash(self, *runargs, stdout=DEVNULL, stderr=DEVNULL, **runkwargs):
         """Flash application in ``ctrl.application_directory`` to ctrl.
@@ -122,8 +133,9 @@ class RIOTCtrl():
         :param *runkwargs: kwargs passed to subprocess.run
         :return: subprocess.CompletedProcess object
         """
-        self.make_run(self.FLASH_TARGETS, *runargs,
-                      stdout=stdout, stderr=stderr, **runkwargs)
+        self.make_run(
+            self.FLASH_TARGETS, *runargs, stdout=stdout, stderr=stderr, **runkwargs
+        )
 
     def reset(self):
         """Reset current ctrl."""
@@ -151,15 +163,16 @@ class RIOTCtrl():
         self.stop_term()
 
         term_cmd = self.make_command(self.TERM_TARGETS)
-        self.term = self.TERM_SPAWN_CLASS(term_cmd[0], args=term_cmd[1:],
-                                          env=self.env, **spawnkwargs)
+        self.term = self.TERM_SPAWN_CLASS(
+            term_cmd[0], args=term_cmd[1:], env=self.env, **spawnkwargs
+        )
 
         # on many platforms, the termprog needs a short while to be ready
         time.sleep(self.TERM_STARTED_DELAY)
 
     def _term_pid(self):
         """Terminal pid or None."""
-        return getattr(self.term, 'pid', None)
+        return getattr(self.term, "pid", None)
 
     def stop_term(self):
         """Safe 'term.close'.
@@ -172,11 +185,11 @@ class RIOTCtrl():
             # Not initialized
             pass
         except ProcessLookupError:
-            self.logger.warning('Process already stopped')
+            self.logger.warning("Process already stopped")
         except pexpect.ExceptionPexpect:
             # Not sure how to cover this in a test
             # 'make term' is not killed by 'term.close()'
-            self.logger.critical('Could not close make term')
+            self.logger.critical("Could not close make term")
 
     def make_run(self, targets, *runargs, **runkwargs):
         """Call make `targets` for current RIOTctrl context.
@@ -187,7 +200,7 @@ class RIOTCtrl():
         :param *runargs: args passed to subprocess.run
         :param *runkwargs: kwargs passed to subprocess.run
         :return: subprocess.CompletedProcess object
-            """
+        """
         command = self.make_command(targets)
         # pylint:disable=subprocess-run-check
         return subprocess.run(command, env=self.env, *runargs, **runkwargs)
@@ -199,8 +212,8 @@ class RIOTCtrl():
         """
         command = [MAKE]
         command.extend(self.MAKE_ARGS)
-        if self._application_directory != '.':
-            dir_cmd = '--no-print-directory', '-C', self._application_directory
+        if self._application_directory != ".":
+            dir_cmd = "--no-print-directory", "-C", self._application_directory
             command.extend(dir_cmd)
         command.extend(targets)
         return command
@@ -212,7 +225,7 @@ class RIOTCtrlFactoryBase(abc.ABC):
     """Abstract factory to create different RIOTCtrl."""
 
     @abc.abstractmethod
-    def get_ctrl(self, application_directory='.', env=None):
+    def get_ctrl(self, application_directory=".", env=None):
         """
         Returns a RIOTCtrl object of a class specified by the Factory
 
@@ -242,7 +255,7 @@ class RIOTCtrlBoardFactory(RIOTCtrlFactoryBase):
         if board_cls is not None:
             self.board_cls.update(board_cls)
 
-    def get_ctrl(self, application_directory='.', env=None):
+    def get_ctrl(self, application_directory=".", env=None):
         """
         Returns a RIOTCtrl object of a class as specified in `board_cls` on
         initialization.
@@ -262,9 +275,9 @@ class RIOTCtrlBoardFactory(RIOTCtrlFactoryBase):
         the_env.update(os.environ)
         if env:
             the_env.update(env)
-        if 'BOARD' not in the_env or the_env['BOARD'] not in self.board_cls:
+        if "BOARD" not in the_env or the_env["BOARD"] not in self.board_cls:
             cls = self.DEFAULT_CLS
         else:
-            cls = self.board_cls[the_env['BOARD']]
+            cls = self.board_cls[the_env["BOARD"]]
         # cls does its own fetching of `os.environ` so only provide `env` here
         return cls(application_directory=application_directory, env=env)

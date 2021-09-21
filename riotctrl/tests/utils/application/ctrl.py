@@ -19,11 +19,10 @@ import argparse
 import subprocess
 
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument('argument', nargs='+', default=[])
+PARSER.add_argument("argument", nargs="+", default=[])
 
 # Signals sent by 'pexpect' + SIGTERM
-FORWARDED_SIGNALS = (signal.SIGHUP, signal.SIGCONT, signal.SIGINT,
-                     signal.SIGTERM)
+FORWARDED_SIGNALS = (signal.SIGHUP, signal.SIGCONT, signal.SIGINT, signal.SIGTERM)
 
 
 def forward_signal(signum, proc):
@@ -54,6 +53,7 @@ def _run_cmd(args, termonsig=signal.SIGUSR1, **popenkwargs):
         """Terminate process and set the 'restart_process' flag."""
         restart_process.set()
         proc.terminate()
+
     signal.signal(termonsig, _reset)
 
     proc.wait()
@@ -70,5 +70,5 @@ def main():
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

@@ -11,7 +11,7 @@ import signal
 import argparse
 
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument('running_file')
+PARSER.add_argument("running_file")
 
 
 def main():
@@ -25,12 +25,12 @@ def main():
     # This should be the case if normally terminated
     atexit.register(os.remove, args.running_file)
 
-    with open(args.running_file, 'w', encoding='utf-8') as rfile:
-        rfile.write('Running\n')
-    print('Running')
+    with open(args.running_file, "w", encoding="utf-8") as rfile:
+        rfile.write("Running\n")
+    print("Running")
     while True:
         signal.pause()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

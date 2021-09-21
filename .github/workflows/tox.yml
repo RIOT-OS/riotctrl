@@ -17,7 +17,6 @@ jobs:
       max-parallel: 5
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
-        tox-testenv: ["test", "test-rapidjson"]
 
     steps:
     - uses: actions/checkout@v1
@@ -32,12 +31,14 @@ jobs:
     - name: Test with tox
       run: |
         pyenv="py$(echo "${{ matrix.python-version }}" | tr -d '.')"
-        tox -e ${pyenv},${{ matrix.tox-testenv }},flake8,lint
+        tox -e ${pyenv}-test,${pyenv}-rapidjson
+    - name: Check style
+      if: matrix.python-version == 3.9
+      run: tox -e flake8,lint
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@master
       if: >-
         matrix.python-version == 3.9 &&
-        matrix.tox-testenv == 'test' &&
         github.event_name == 'push' &&
         startsWith(github.event.ref, 'refs/tags')
       with:

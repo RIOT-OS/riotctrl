@@ -31,7 +31,8 @@ jobs:
     - name: Test with tox
       run: |
         pyenv="py$(echo "${{ matrix.python-version }}" | tr -d '.')"
-        tox -e ${pyenv}-test,${pyenv}-rapidjson,flake8,lint
+        tox -e ${pyenv}-test,flake8,lint
+        tox -e ${pyenv}-rapidjson -- --cov-append
     - name: Check code format with black
       if: matrix.python-version == 3.9
       run: tox -e black

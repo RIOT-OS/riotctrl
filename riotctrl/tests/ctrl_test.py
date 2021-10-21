@@ -13,6 +13,21 @@ CURDIR = os.path.dirname(__file__)
 APPLICATIONS_DIR = os.path.join(CURDIR, "utils", "application")
 
 
+def test_not_implemented_factory():
+    """Test that an incomplete factory cannot be instanciated."""
+
+    class MyFactory(riotctrl.ctrl.RIOTCtrlFactoryBase):
+        """Dummy factory class that cannot be instanciated."""
+
+        # pylint:disable=too-few-public-methods
+        ...
+
+    with pytest.raises(TypeError) as exc_info:
+        _ = MyFactory()  # pylint:disable=abstract-class-instantiated
+
+    assert "Can't instantiate abstract class MyFactory" in exc_info.value.args[0]
+
+
 def test_riotctrl_application_dir():
     """Test the creation of a riotctrl with an `application_dir`."""
     appbase = os.path.abspath(os.environ["APPBASE"])

@@ -379,7 +379,7 @@ under a threshold or that an mount of responses was received..
     from riotctrl_shell.netif import Ifconfig
 
 
-    class Shell(ifconfig, GNRCICMPv6Echo):
+    class Shell(Ifconfig, GNRCICMPv6Echo):
       pass
 
 
@@ -393,7 +393,7 @@ under a threshold or that an mount of responses was received..
         # Perform a multicast ping and parse results
         pinger = Shell(native_0)
         parser = GNRCICMPv6EchoParser()
-        result = parser.parse(pinger.ping6("ff02::1
+        result = parser.parse(pinger.ping6("ff02::1"))
         # assert packetloss is under 10%"))
         assert result['stats']['packet_loss'] < 10
         # assert at least one responder

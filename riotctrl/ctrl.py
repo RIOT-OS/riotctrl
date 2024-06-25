@@ -133,7 +133,7 @@ class RIOTCtrl:
         :param *runkwargs: kwargs passed to subprocess.run
         :return: subprocess.CompletedProcess object
         """
-        self.make_run(
+        return self.make_run(
             self.FLASH_TARGETS, *runargs, stdout=stdout, stderr=stderr, **runkwargs
         )
 

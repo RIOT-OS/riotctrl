@@ -12,17 +12,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       max-parallel: 5
       fail-fast: false
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+        python-version: ['3.8', '3.9', '3.12']
 
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -34,15 +34,15 @@ jobs:
         pyenv="py$(echo "${{ matrix.python-version }}" | tr -d '.')"
         tox -e ${pyenv}-test,${pyenv}-rapidjson,flake8,lint
     - name: Check code format with black
-      if: matrix.python-version == 3.9
+      if: matrix.python-version == '3.9'
       run: tox -e black
     - name: Check package
-      if: matrix.python-version == 3.9
+      if: matrix.python-version == '3.9'
       run: tox -e check_package
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@master
       if: >-
-        matrix.python-version == 3.9 &&
+        matrix.python-version == '3.9' &&
         github.event_name == 'push' &&
         startsWith(github.event.ref, 'refs/tags')
       with:

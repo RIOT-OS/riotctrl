@@ -1,4 +1,5 @@
 """riotctrl.__init__ tests"""
+
 import riotctrl
 
 

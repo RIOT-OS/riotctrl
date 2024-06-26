@@ -19,9 +19,6 @@ def test_not_implemented_factory():
     class MyFactory(riotctrl.ctrl.RIOTCtrlFactoryBase):
         """Dummy factory class that cannot be instanciated."""
 
-        # pylint:disable=too-few-public-methods
-        ...
-
     with pytest.raises(TypeError) as exc_info:
         _ = MyFactory()  # pylint:disable=abstract-class-instantiated
 

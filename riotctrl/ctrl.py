@@ -234,7 +234,6 @@ class RIOTCtrlFactoryBase(abc.ABC):
         :param env:                   `env` initialization parameter for
                                       the RIOTCtrl object.
         """
-        ...  # pragma: no cover
 
 
 class RIOTCtrlBoardFactory(RIOTCtrlFactoryBase):

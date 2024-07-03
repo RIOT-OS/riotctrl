@@ -190,6 +190,8 @@ class RIOTCtrl:
             # Not sure how to cover this in a test
             # 'make term' is not killed by 'term.close()'
             self.logger.critical("Could not close make term")
+        finally:
+            self.term = None
 
     def make_run(self, targets, *runargs, **runkwargs):
         """Call make `targets` for current RIOTctrl context.

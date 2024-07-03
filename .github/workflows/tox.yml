@@ -36,6 +36,9 @@ jobs:
     - name: Check code format with black
       if: matrix.python-version == '3.9'
       run: tox -e black
+    - name: Build package
+      if: matrix.python-version == '3.9'
+      run: tox -e build
     - name: Check package
       if: matrix.python-version == '3.9'
       run: tox -e check_package

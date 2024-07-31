@@ -74,6 +74,7 @@ class ShellInteraction:
         """
         Stops the terminal of the RIOTCtrl object
         """
+        self.term_was_started = False
         self.riotctrl.stop_term()
 
     @staticmethod

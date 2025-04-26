@@ -6,6 +6,7 @@ Define class to abstract a node over the RIOT build system.
 import abc
 import os
 import time
+import signal
 import logging
 import subprocess
 import contextlib
@@ -179,7 +180,14 @@ class RIOTCtrl:
 
         Handles possible exceptions.
         """
+        if self._term_pid() is None:
+            return
+
         try:
+            # Native will spawn more than one process, so send the signals
+            # to the process group instead of the process.
+            os.killpg(self._term_pid(), signal.SIGHUP)
+            os.killpg(self._term_pid(), signal.SIGINT)
             self.term.close()
         except AttributeError:
             # Not initialized
